@@ -1,0 +1,270 @@
+{
+  "info": {
+    "name": "Hope NGO API - Beneficiaries & Dashboard",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Start the backend first (uvicorn app.main:app --reload --port 8000). Change {{beneficiaryId}} to an id that exists."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "beneficiaryId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Beneficiaries",
+      "item": [
+        {
+          "name": "1. List all beneficiaries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/beneficiaries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "beneficiaries"
+              ]
+            },
+            "description": "Expect 200 and a JSON array."
+          }
+        },
+        {
+          "name": "2. List - search 'priya'",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/beneficiaries?search=priya",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "beneficiaries"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "priya"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "3. List - only Inactive",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/beneficiaries?status=Inactive",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "beneficiaries"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "Inactive"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "4. Get one beneficiary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/beneficiaries/{{beneficiaryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "beneficiaries",
+                "{{beneficiaryId}}"
+              ]
+            },
+            "description": "Expect 200. Try id 9999 for a 404."
+          }
+        },
+        {
+          "name": "5. Create beneficiary (valid)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/beneficiaries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "beneficiaries"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Neha Kapoor\",\n  \"age\": 27,\n  \"gender\": \"Female\",\n  \"phone\": \"9876500011\",\n  \"city\": \"Pune\",\n  \"email\": \"neha@example.org\",\n  \"program\": \"Education Support Program\",\n  \"primary_need\": \"Education\",\n  \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Expect 201 and the saved record (with id, code, created_at). Copy the id into the beneficiaryId variable."
+          }
+        },
+        {
+          "name": "6. Create beneficiary (invalid)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/beneficiaries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "beneficiaries"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"A\",\n  \"age\": 150,\n  \"gender\": \"Unknown\",\n  \"phone\": \"123\",\n  \"city\": \"\",\n  \"email\": \"not-an-email\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Expect 422 with a list of field errors."
+          }
+        },
+        {
+          "name": "7. Update beneficiary (full update)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/beneficiaries/{{beneficiaryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "beneficiaries",
+                "{{beneficiaryId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Neha Kapoor (edited)\",\n  \"age\": 27,\n  \"gender\": \"Female\",\n  \"phone\": \"9876500011\",\n  \"city\": \"Pimpri\",\n  \"email\": \"neha@example.org\",\n  \"program\": \"Education Support Program\",\n  \"primary_need\": \"Education\",\n  \"status\": \"Follow-up Required\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "PUT replaces all fields, so send the complete record. Expect 200."
+          }
+        },
+        {
+          "name": "8. Deactivate beneficiary (soft delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/beneficiaries/{{beneficiaryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "beneficiaries",
+                "{{beneficiaryId}}"
+              ]
+            },
+            "description": "Expect 200. The record is NOT removed - its status becomes 'Inactive'."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "9. Dashboard statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/statistics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "statistics"
+              ]
+            }
+          }
+        },
+        {
+          "name": "10. Dashboard statistics - last 7 days = 'recent'",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/statistics?recent_days=7",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "statistics"
+              ],
+              "query": [
+                {
+                  "key": "recent_days",
+                  "value": "7"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
